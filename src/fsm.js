@@ -1,15 +1,24 @@
 class FSM {
-    /**
+    /**initial: 'normal',
+    states: {
      * Creates new FSM instance.
      * @param config
      */
-    constructor(config) {}
+    
+    constructor(config) {
+        if (!config)
+            throw new Error();
 
+    }
+    
+        
     /**
      * Returns active state.
      * @returns {String}
      */
-    getState() {}
+    getState() {
+        console.log(initial);
+    }
 
     /**
      * Goes to specified state.
