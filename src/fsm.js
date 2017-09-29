@@ -25,8 +25,10 @@ class FSM {
      * @param state
      */
     changeState(state) {
+
         if (state === 'normal' || state === 'busy' || state === 'sleeping'|| state === 'hungry') var a = 1;
         else throw new Error();
+
         
         if (this.info.initial === state) {
             //console.log(this.info.initial);
@@ -101,9 +103,26 @@ class FSM {
      * @param event
      */
     trigger(event) {
-        //console.log(event);
+        
+        /*switch(this.info.initial) {
+            case 'normal': 
+                if (event == 'study') break;
+                else throw new Error();
+            case 'busy':
+                if (event == 'get_tired'|| event === 'get_hungry') break;
+                else throw new Error();
+            case 'sleeping':
+                if (event == 'get_hungry'|| event === 'get_up') break;
+                else throw new Error();
+            case 'hungry':
+                if (event == 'eat') break;
+                else throw new Error();
+        }*/
+
         /*if (event === 'study' || event === 'eat' || event === 'get_tired'|| event === 'get_hungry'|| event === 'get_up') var a = 1;
-        else throw new Error('1');*/
+        else throw new Error;
+        console.log(this.info.initial);*/
+
         switch(this.info.initial) {
             case 'normal':
                 switch(event) {
@@ -127,8 +146,8 @@ class FSM {
                         /*this.info.initial = this.info.states.normal.transitions.study;
                         this.info.initial = this.info.states.busy.transitions.get_hungry;*/
                         break;
-                    default: throw new Error;
-                        break;
+                    /*default: throw new Error;
+                        break;*/
                 };
                 break;
             case 'busy':
@@ -149,8 +168,8 @@ class FSM {
                         this.info.initial = this.info.states.busy.transitions.get_tired;
                         this.info.initial = this.info.states.sleeping.transitions.get_up;
                         break;
-                    default: throw new Error;
-                        break;
+                    /*default: throw new Error;
+                        break;*/
                 };
                 break;
             case 'sleeping':
@@ -171,8 +190,8 @@ class FSM {
                     case 'get_up':
                         this.info.initial = this.info.states.sleeping.transitions.get_up;
                         break;
-                    default: throw new Error;
-                        break;
+                    /*default: throw new Error;
+                        break;*/
                 };
                 break;
             case 'hungry':
@@ -195,8 +214,8 @@ class FSM {
                         this.info.initial = this.info.states.busy.transitions.get_tired;
                         this.info.initial = this.info.states.sleeping.transitions.get_up;
                         break;
-                    default: throw new Error;
-                        break;
+                    /*default: throw new Error;
+                        break;*/
                 };
                 break;
         };
@@ -234,9 +253,28 @@ class FSM {
      */
     getStates(event) {
 
-        //var a = ();
-
-        console.log(toString(this.info.states));
+        if (!event) return ['normal','busy','hungry','sleeping'];
+        switch(event) {
+            case 'study':
+                return ['normal'];
+                break;
+            case 'eat':
+                return ['hungry'];
+                break;
+            case 'get_tired':
+                return ['busy'];
+                break;
+            case 'get_hungry':
+                return ['busy','sleeping'];
+                break;
+            case 'get_up':
+                return ['sleeping'];
+                break;
+            default: 
+                return [];
+                break;
+        };
+        //console.log(this.info.states);
         //if(!event) return this.info;
     }
 
@@ -245,14 +283,35 @@ class FSM {
      * Returns false if undo is not available.
      * @returns {Boolean}
      */
-    undo() {}
+    undo() {
+        if(this.info.initial == 'normal') return false;
+        else {
+            switch(this.info.initial) {
+                case 'busy':
+                    this.info.initial = this.info.states.busy.transitions.get_hungry;
+                    this.info.initial = this.info.states.hungry.transitions.eat;
+                    return true;
+                    break;
+                case 'sleeping':
+                    this.info.initial = this.info.states.sleeping.transitions.get_up;
+                    return true;
+                    break;
+                case 'hungry':
+                    this.info.initial = this.info.states.hungry.transitions.eat;
+                    return true;
+                    break;
+            }
+        }
+    }
 
     /**
      * Goes redo to state.
      * Returns false if redo is not available.
      * @returns {Boolean}
      */
-    redo() {}
+    redo() {
+        if(this.info.initial == 'normal') return false;
+    }
 
     /**
      * Clears transition history
