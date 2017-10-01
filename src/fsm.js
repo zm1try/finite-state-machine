@@ -61,7 +61,9 @@ class FSM {
      * @returns {Array}
      */
     getStates(event) {
-        return Object.keys(this.config.states);
+        if (!event) return Object.keys(this.config.states);
+        if (!(event in Object.keys(this.config.states))) return [];
+        //return Object.keys(this.config.states).filter(state => event ? (event in this.config.states[state].transitions) : true);
     }
 
     /**
